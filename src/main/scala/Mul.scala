@@ -23,7 +23,7 @@ class Mul extends Module {
     y <- 0 to 15
   } muls += (x*y).U(8.W)
 
-  val vec_mapper = VecInit(muls)
+  val vec_mapper = VecInit(muls.toSeq)
   io.z := vec_mapper((Cat(io.x, io.y)))
   // -------------------------------- \\
 }

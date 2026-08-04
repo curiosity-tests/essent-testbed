@@ -4,7 +4,7 @@ version := "0.8"
 
 name := "essent.testbed"
 
-mainClass in (Compile, run) := Some("essent.testbed.Launcher")
+Compile / run / mainClass := Some("essent.testbed.Launcher")
 
 scalaVersion := "2.13.10"
 val chiselVersion = "3.5.6"

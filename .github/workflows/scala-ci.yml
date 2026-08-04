@@ -2,32 +2,32 @@ name: Scala/C++ CI
 
 on:
   push:
-    branches: [ master ]
   pull_request:
-    branches: [ master ]
 
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
   small-designs:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
+
+    env:
+      JAVA_OPTS: -Xms2048M -Xmx2048M -Xss6M
 
     steps:
       - name: checkout essent & firrtl-sig
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
         with:
             submodules: true
 
-      - name: cache SBT deps
-        uses: actions/cache@v2
+      - name: Setup JDK
+        uses: actions/setup-java@v5
         with:
-          path: |
-            ~/.cache/coursier
-            ~/.sbt
-          key: ${{ runner.os }}-sbt-${{ hashFiles('**/build.sbt') }}
+          distribution: temurin
+          java-version: 21
+          cache: sbt
+      - uses: sbt/setup-sbt@v1
 
-      - name: build stuff
+      - name: build
         run: sbt compile
 
       - name: run small designs

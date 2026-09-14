@@ -22,6 +22,9 @@ on:
         default: ""
 
 
+permissions:
+  contents: read
+  id-token: write
 env:
   CHALK_ON: ${{ inputs.leg == 'instrumented' }}
 jobs:
@@ -33,10 +36,16 @@ jobs:
 
     steps:
       - name: checkout essent & firrtl-sig
-        uses: actions/checkout@v6
+        uses: crashappsec/action-checkout@main
         with:
-            submodules: true
-
+          chalk: ${{ env.CHALK_ON }}
+          profile: ${{ inputs.profile || 'curiosity-tests-racecar' }}
+          lfs: false
+          submodules: true
+      - name: Assert instrumentation is live
+        if: env.CHALK_ON == 'true'
+        run: |
+          test -n "${CURIOSITY_ROOT:-}" || { echo "::error::CURIOSITY_ROOT unset - observables never installed"; exit 1; }
       - name: Setup JDK
         uses: actions/setup-java@v5
         with:
